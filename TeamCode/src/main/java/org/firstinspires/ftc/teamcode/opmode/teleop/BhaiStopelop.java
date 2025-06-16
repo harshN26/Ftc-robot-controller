@@ -94,6 +94,8 @@ public class BhaiStopelop extends LinearOpMode {
     // Button cooldown timers
     private Timer gamepad1_a_timer = new Timer();
     private Timer gamepad1_b_timer = new Timer();
+
+    private boolean running = false;
     private Timer gamepad1_x_timer = new Timer();
     private Timer gamepad1_y_timer = new Timer();
     private final double BUTTON_COOLDOWN = 0.4; // 0.1 seconds
@@ -585,7 +587,7 @@ public class BhaiStopelop extends LinearOpMode {
                         }
                     }
 
-                    if (teleopPathState == 0) {
+                    if (teleopPathState == 0 && !running) {
                         if (gamepad2.left_stick_y != 0.0) {
 //                        if (slide.sendPosition() > -1800 || gamepad2.left_stick_y > 0.0 || arm.sendPosition() < -1500)
 //                        if (gamepad2.left_stick_y > 0.0)
@@ -609,11 +611,21 @@ public class BhaiStopelop extends LinearOpMode {
 
 
 
-
             if (gamepad2XCurr&&!gamepad2XLast&&clawPosition==1.0){prevClawPosition = clawPosition; clawPosition = 0.25;}
             else if (gamepad2XCurr&&!gamepad2XLast&&clawPosition==0.25) {prevClawPosition = clawPosition; clawPosition = 1.0;}
 
             if (gamepad2.b) slide.resetSlide();
+            if (gamepad2.a) {
+                slide.setPosition(-500, 1.0);
+                running = true;
+
+            };
+
+
+            if (gamepad2.left_stick_y != 0) {
+                slide.setModeEncoder();
+                running = false;
+            }
 
             if (gamepad2.right_bumper) wristPosition += 0.0075;
             if (gamepad2.left_bumper) wristPosition -= 0.0075;
