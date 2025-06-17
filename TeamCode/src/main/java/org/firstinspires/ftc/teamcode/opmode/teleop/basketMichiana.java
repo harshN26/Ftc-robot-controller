@@ -24,8 +24,8 @@ import org.firstinspires.ftc.teamcode.pedroPathing.tuning.FollowerConstants;
 import org.firstinspires.ftc.teamcode.pedroPathing.util.PIDFController;
 import org.firstinspires.ftc.teamcode.pedroPathing.util.Timer;
 
-@TeleOp(name = "MichianaTeleOp SPEC", group = "TeleOp")
-public class BhaiStopelop extends LinearOpMode {
+@TeleOp(name = "MichianaTeleOp BASKET", group = "TeleOp")
+public class basketMichiana extends LinearOpMode {
 
     Limelight ll;
     double cameraFOVPeriToRobot=21.5;
@@ -72,7 +72,7 @@ public class BhaiStopelop extends LinearOpMode {
 
     private Path pickMore, placeSpecimen2, moveLeft;
 
-    private final Pose parkPose = new Pose(0, 57, Math.toRadians(0));
+    private final Pose parkPose = new Pose(0, 57, Math.toRadians(270));
     private final Pose observationPose = new Pose(6, 30, Math.toRadians(0));
     private Pose chamberPose = new Pose(28, 70, Math.toRadians(0));
 
@@ -393,10 +393,10 @@ public class BhaiStopelop extends LinearOpMode {
                             specArmWristPos = 1.0;
                             specArmClawPos = 1.0;
                             Path path2= new Path(
-                                new BezierCurve(
-                                        new Point(follower.getPose().getX(), follower.getPose().getY()),
-                                        new Point(chamberPose.getX()-10,chamberPose.getY()),
-                                        new Point(chamberPose.getX(), chamberPose.getY()))
+                                    new BezierCurve(
+                                            new Point(follower.getPose().getX(), follower.getPose().getY()),
+                                            new Point(chamberPose.getX()-10,chamberPose.getY()),
+                                            new Point(chamberPose.getX(), chamberPose.getY()))
 
                             );
                             path2.setConstantHeadingInterpolation(Math.toRadians(0));
@@ -450,9 +450,9 @@ public class BhaiStopelop extends LinearOpMode {
                             specArmWristPos = 1.0;
                             specArmClawPos = 1.0;
                             Path runnable=new Path(
-                                new BezierLine(
-                                        new Point(follower.getPose().getX(), follower.getPose().getY()),
-                                        new Point(chamberPose.getX()+2, chamberPose.getY()))
+                                    new BezierLine(
+                                            new Point(follower.getPose().getX(), follower.getPose().getY()),
+                                            new Point(chamberPose.getX()+2, chamberPose.getY()))
                             );
                             runnable.setConstantHeadingInterpolation(Math.toRadians(0));
                             switch(autoPlacePos) {
@@ -573,39 +573,39 @@ public class BhaiStopelop extends LinearOpMode {
 
 
 
-                if (teleopPathState == 0 || teleopPathState == 1) {
-                    if (teleopPathState == 0) {
-                        if (gamepad2.right_stick_y != 0.0) {
+            if (teleopPathState == 0 || teleopPathState == 1) {
+                if (teleopPathState == 0) {
+                    if (gamepad2.right_stick_y != 0.0) {
 //                        if (arm.sendPosition() > -2750 || gamepad2.right_stick_y > 0.0)
 //                        if (gamepad2.right_stick_y > 0.0)
-                            arm.setModeEncoder();
-                            arm.setPowerArm(gamepad2.right_stick_y);
+                        arm.setModeEncoder();
+                        arm.setPowerArm(gamepad2.right_stick_y);
 //                        else
 //                            arm.setPowerArm(0);
-                        } else {
-                            arm.setPowerArm(0);
-                        }
+                    } else {
+                        arm.setPowerArm(0);
                     }
+                }
 
-                    if (teleopPathState == 0 && !running) {
-                        if (gamepad2.left_stick_y != 0.0) {
+                if (teleopPathState == 0 && !running) {
+                    if (gamepad2.left_stick_y != 0.0) {
 //                        if (slide.sendPosition() > -1800 || gamepad2.left_stick_y > 0.0 || arm.sendPosition() < -1500)
 //                        if (gamepad2.left_stick_y > 0.0)
-                            slide.setModeEncoder();
-                            slide.setPowerSlide(gamepad2.left_stick_y);
+                        slide.setModeEncoder();
+                        slide.setPowerSlide(gamepad2.left_stick_y);
 //                        else
 //                            slide.setPowerSlide(0);
-                        } else {
-                            slide.setPowerSlide(0);
-                        }
+                    } else {
+                        slide.setPowerSlide(0);
                     }
+                }
 
 //                if (slide.sendPosition() < -1750 && arm.sendPosition() > -1500) {
 //                    slide.setPosition(-1700, 1.0);
 //                } else {
 //                    slide.setModeEncoder();
 //                }
-                }
+            }
 
 
 
@@ -759,13 +759,13 @@ public class BhaiStopelop extends LinearOpMode {
     private boolean executeButtonAction(String button) {
         switch (button) {
             case "gamepad1_x":
-                    if (specArmClawPos == 0.5) {
-                        target = 80 + constant;
-                    } else {
-                        specArmClawPos = 0.5;
-                        specArmWristPos = 0.34;
+                if (specArmClawPos == 0.5) {
+                    target = 80 + constant;
+                } else {
+                    specArmClawPos = 0.5;
+                    specArmWristPos = 0.34;
 
-                    }
+                }
 
 
                 gamepad1_x_timer.resetTimer();

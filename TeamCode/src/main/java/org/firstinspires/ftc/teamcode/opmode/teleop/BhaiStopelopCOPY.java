@@ -3,10 +3,10 @@ package org.firstinspires.ftc.teamcode.opmode.teleop;
 import static org.firstinspires.ftc.teamcode.config.RobotConstants.DRAGGER_CLOSE;
 import static org.firstinspires.ftc.teamcode.config.RobotConstants.ENC_PER_INCH;
 
-import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
 import org.firstinspires.ftc.teamcode.config.subsystem.Arm;
 import org.firstinspires.ftc.teamcode.config.subsystem.Claw;
 import org.firstinspires.ftc.teamcode.config.subsystem.Limelight;
@@ -24,13 +24,17 @@ import org.firstinspires.ftc.teamcode.pedroPathing.tuning.FollowerConstants;
 import org.firstinspires.ftc.teamcode.pedroPathing.util.PIDFController;
 import org.firstinspires.ftc.teamcode.pedroPathing.util.Timer;
 
-@TeleOp(name = "MichianaTeleOp SPEC", group = "TeleOp")
-public class BhaiStopelop extends LinearOpMode {
+@TeleOp(name = "MichianaTeleOp SPEC COPY", group = "TeleOp")
+public class BhaiStopelopCOPY extends LinearOpMode {
 
     Limelight ll;
     double cameraFOVPeriToRobot=21.5;
     LLResult result;
     public double ta=0;
+    boolean game2RightBumperLast=false;
+    boolean game2RightBumperCurr=false;
+    boolean game2LeftBumperLast=false;
+    boolean game2LeftBumperCurr=false;
     double distanceFromLimelightToGoalInches;
     double limelightMountAngleDegrees = 0.0;
 
@@ -101,17 +105,17 @@ public class BhaiStopelop extends LinearOpMode {
     private final double BUTTON_COOLDOWN = 0.4; // 0.1 seconds
 
     public enum AUTOPLACEPOS{LEFT,CENTER,RIGHT};
-    AUTOPLACEPOS autoPlacePos=AUTOPLACEPOS.RIGHT;
+    AUTOPLACEPOS autoPlacePos= AUTOPLACEPOS.RIGHT;
 
     public enum SPECARMSTATE{WALL_PICKUP,WALL_CLOSE,ARMSCOREPOS,TROUBLE_SCORING,SPEC_PLACED, ARM_SCORE_TO_TROUBLE_SCORING, WALL_PICKUP_TO_WALL_CLOSE, FINALLYDONE, SPEC_PLACED_OPEN}
 
-    SPECARMSTATE specState=SPECARMSTATE.WALL_CLOSE;
+    SPECARMSTATE specState= SPECARMSTATE.WALL_CLOSE;
 
     public enum SPECARMCONTROL{MANUAL,AUTO};
-    SPECARMCONTROL specArmControl=SPECARMCONTROL.MANUAL;
+    SPECARMCONTROL specArmControl= SPECARMCONTROL.MANUAL;
 
     public enum CLAWPICKSTATE{CLAW_OPEN,CLAW_CLOSE}
-    CLAWPICKSTATE clawState=CLAWPICKSTATE.CLAW_CLOSE;
+    CLAWPICKSTATE clawState= CLAWPICKSTATE.CLAW_CLOSE;
 
     private PathChain goToMethod;
 
@@ -323,13 +327,13 @@ public class BhaiStopelop extends LinearOpMode {
                             }
                             break;
                         case WALL_PICKUP_TO_WALL_CLOSE:
-                            specState=SPECARMSTATE.WALL_CLOSE;
+                            specState= SPECARMSTATE.WALL_CLOSE;
                             break;
                         case ARM_SCORE_TO_TROUBLE_SCORING:
-                            specState=SPECARMSTATE.ARMSCOREPOS;
+                            specState= SPECARMSTATE.ARMSCOREPOS;
                             break;
                         case FINALLYDONE:
-                            specState=SPECARMSTATE.WALL_PICKUP;
+                            specState= SPECARMSTATE.WALL_PICKUP;
                             break;
 
 
@@ -362,7 +366,7 @@ public class BhaiStopelop extends LinearOpMode {
 
                             if (!follower.isBusy()&&follower.getPose()!=observationPose) {
                                 follower.followPath(path1);
-                                specState=SPECARMSTATE.WALL_PICKUP_TO_WALL_CLOSE;
+                                specState= SPECARMSTATE.WALL_PICKUP_TO_WALL_CLOSE;
                             }
 
                             break;
@@ -371,8 +375,8 @@ public class BhaiStopelop extends LinearOpMode {
                             specArmWristPos = 0.34;
                             specArmClawPos = 0.7;
                             if (!follower.isBusy()) {
-                                specArmControl=SPECARMCONTROL.MANUAL;
-                                specState=SPECARMSTATE.WALL_PICKUP;
+                                specArmControl= SPECARMCONTROL.MANUAL;
+                                specState= SPECARMSTATE.WALL_PICKUP;
                                 gamepad1_x_timer.resetTimer();
                                 follower.startTeleopDrive();
                                 pathTimer.resetTimer();
@@ -384,7 +388,7 @@ public class BhaiStopelop extends LinearOpMode {
                                 specArmWristPos =0.34;;
                                 specArmClawPos = 1.0;
                             }else{
-                                specState=SPECARMSTATE.ARMSCOREPOS;
+                                specState= SPECARMSTATE.ARMSCOREPOS;
                                 pathTimer.resetTimer();
                             }
                             break;
@@ -439,7 +443,7 @@ public class BhaiStopelop extends LinearOpMode {
                             specArmWristPos = 1.0;
                             specArmClawPos = 1.0;
                             if(pathTimer.getElapsedTime()>200){
-                                specState=SPECARMSTATE.SPEC_PLACED_OPEN;
+                                specState= SPECARMSTATE.SPEC_PLACED_OPEN;
                                 pathTimer.resetTimer();
                             }
 
@@ -481,7 +485,7 @@ public class BhaiStopelop extends LinearOpMode {
                             if (!follower.isBusy()) {
                                 runnable.setZeroPowerAccelerationMultiplier(0.5);
                                 follower.followPath(runnable);
-                                specState=SPECARMSTATE.FINALLYDONE;
+                                specState= SPECARMSTATE.FINALLYDONE;
                                 pathTimer.resetTimer();
                             }
 
@@ -505,15 +509,15 @@ public class BhaiStopelop extends LinearOpMode {
 
                     }
                     if (gamepad1.a && canExecuteButton("gamepad1_a")) {
-                        autoPlacePos=AUTOPLACEPOS.LEFT;
+                        autoPlacePos= AUTOPLACEPOS.LEFT;
                         gamepad1_a_timer.resetTimer();
                     }
                     if (gamepad1.b && canExecuteButton("gamepad1_b")) {
-                        autoPlacePos=AUTOPLACEPOS.RIGHT;
+                        autoPlacePos= AUTOPLACEPOS.RIGHT;
                         gamepad1_b_timer.resetTimer();
                     }
                     if (gamepad1.y && canExecuteButton("gamepad1_y")) {
-                        autoPlacePos=AUTOPLACEPOS.CENTER;
+                        autoPlacePos= AUTOPLACEPOS.CENTER;
                         gamepad1_y_timer.resetTimer();
                     }
 
@@ -627,8 +631,22 @@ public class BhaiStopelop extends LinearOpMode {
                 running = false;
             }
 
-            if (gamepad2.right_bumper) wristPosition += 0.0075;
-            if (gamepad2.left_bumper) wristPosition -= 0.0075;
+            game2LeftBumperCurr=gamepad2.left_bumper;
+            game2RightBumperCurr=gamepad2.right_bumper;
+
+            if (game2RightBumperCurr&&!game2RightBumperLast) wristPosition += 0.03;
+            if (game2LeftBumperCurr&&!game2LeftBumperLast) wristPosition -= 0.03;
+
+            game2LeftBumperLast=game2LeftBumperCurr;
+            game2RightBumperLast=game2RightBumperCurr;
+
+            if(wristPosition<=0){
+                wristPosition=0.0;
+            }
+            else if(wristPosition>=1.0){
+                wristPosition=1.0;
+            }
+
             if (gamepad2.left_trigger > 0) armPosition += 0.0045;
             if (gamepad2.right_trigger > 0) armPosition -= 0.0045;
 

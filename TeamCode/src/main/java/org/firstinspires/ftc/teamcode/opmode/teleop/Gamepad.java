@@ -7,10 +7,13 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import org.firstinspires.ftc.teamcode.config.subsystem.Arm;
 import org.firstinspires.ftc.teamcode.config.subsystem.Claw;
 import org.firstinspires.ftc.teamcode.config.subsystem.Slide;
+import org.firstinspires.ftc.teamcode.config.subsystem.SpecArm;
+import org.firstinspires.ftc.teamcode.config.subsystem.SpecArmClaw;
 import org.firstinspires.ftc.teamcode.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.BezierCurve;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Path;
+import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.PathChain;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Point;
 
 /**
@@ -37,10 +40,13 @@ public class Gamepad extends LinearOpMode {
 
     private Path goPark;
 
-
+    SpecArm specArm;
+    SpecArmClaw specClaw;
     Claw claw;
     Arm arm;
     Slide slide;
+
+    double constant=100;
 
     // Variables to store current motor power
     double currentForwardPower = 0;
@@ -53,10 +59,34 @@ public class Gamepad extends LinearOpMode {
     // Slow mode factor
     double slowModeFactor = 0.25;  // This controls how slow the robot moves when the right trigger is pressed
 
+    public enum AUTOPLACEPOS{LEFT,CENTER,RIGHT};
+    BhaiStopelop.AUTOPLACEPOS autoPlacePos= BhaiStopelop.AUTOPLACEPOS.RIGHT;
+
+    public enum SPECARMSTATE{WALL_PICKUP,WALL_CLOSE,ARMSCOREPOS,TROUBLE_SCORING,SPEC_PLACED, ARM_SCORE_TO_TROUBLE_SCORING, WALL_PICKUP_TO_WALL_CLOSE, FINALLYDONE, SPEC_PLACED_OPEN}
+
+    BhaiStopelop.SPECARMSTATE specState= BhaiStopelop.SPECARMSTATE.WALL_CLOSE;
+
+    public enum SPECARMCONTROL{MANUAL,AUTO};
+    BhaiStopelop.SPECARMCONTROL specArmControl= BhaiStopelop.SPECARMCONTROL.MANUAL;
+
+    public enum CLAWPICKSTATE{CLAW_OPEN,CLAW_CLOSE}
+    BhaiStopelop.CLAWPICKSTATE clawState= BhaiStopelop.CLAWPICKSTATE.CLAW_CLOSE;
+
+    private PathChain goToMethod;
+
+    boolean gamepad2XLast=false;
+    boolean gamepad2XCurr=false;
+
+
+
     @Override
     public void runOpMode() throws InterruptedException {
 
-
+        arm = new Arm("armMotor", hardwareMap);
+        slide = new Slide("slideMotor", hardwareMap);
+        claw = new Claw(hardwareMap);
+        specArm=new SpecArm(hardwareMap, telemetry);
+        specClaw=new SpecArmClaw(hardwareMap);
 
         follower = new Follower(hardwareMap);
         follower.setStartingPose(parkPose);
@@ -66,9 +96,7 @@ public class Gamepad extends LinearOpMode {
         if (isStopRequested()) return;
         follower.startTeleopDrive();
 
-        arm = new Arm("armMotor", hardwareMap);
-        slide = new Slide("slideMotor", hardwareMap);
-        claw = new Claw(hardwareMap);
+        specArm.init_();
 
 
         while (opModeIsActive()) {
@@ -181,6 +209,12 @@ public class Gamepad extends LinearOpMode {
             if (gamepad1.right_bumper) {
                 setScorePosClaw();
             }
+            if (gamepad1.x) {
+                constant += 5;
+            }
+            if (gamepad1.y) {
+                constant -= 5;
+            }
 
 
 //            if (gamepad2.left_bumper) {
@@ -201,6 +235,9 @@ public class Gamepad extends LinearOpMode {
 
 
 
+
+
+
             if (gamepad2.a) {
                 slide.setPosition(-100, 1.0);
             }
@@ -208,6 +245,7 @@ public class Gamepad extends LinearOpMode {
             claw.setClawPosition(clawPosition);
             claw.setWristPosition(wristPosition);
             claw.setArmPosition(armPosition);
+            specArm.loop_();
 
             telemetry.addData("X", follower.getPose().getX());
             telemetry.addData("Y", follower.getPose().getY());

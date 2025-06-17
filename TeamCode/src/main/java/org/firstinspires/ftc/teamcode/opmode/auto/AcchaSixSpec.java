@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.PathChain;
 import org.firstinspires.ftc.teamcode.pedroPathing.pathGeneration.Point;
 import org.firstinspires.ftc.teamcode.pedroPathing.util.Timer;
 
-@Autonomous(name="Bhaisap")
+@Autonomous(name="Michiana 5 spec",group="!")
 public class AcchaSixSpec extends LinearOpMode {
     private Follower follower;
     private Timer pathTimer, actionTimer, opmodeTimer;
@@ -118,8 +118,8 @@ public class AcchaSixSpec extends LinearOpMode {
 
         goToSamplesPart3 = new Path(new BezierCurve(
                 new Point(12, 18, Point.CARTESIAN),
-                new Point(44, 23, Point.CARTESIAN),
-                new Point(49.5, 10, Point.CARTESIAN)
+                new Point(44, 26, Point.CARTESIAN),
+                new Point(50.5, 10, Point.CARTESIAN)
         ));
         goToSamplesPart3.setConstantHeadingInterpolation(Math.toRadians(0));
         goToSamplesPart3.setPathEndHeadingConstraint(10.0);
@@ -169,6 +169,7 @@ public class AcchaSixSpec extends LinearOpMode {
                 follower.followPath(hangSpecimen1, true);
 //                specArm.set_target(0);
                 specArm.set_target(-330);
+                arm.setPosition(-700, 1.0);
 //                specArmClaw.setWristPosition(0.6);
                 setPathState(1);
             case 1:
